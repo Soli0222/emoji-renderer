@@ -5,4 +5,4 @@ numpy==2.1.1
 pydantic==2.9.2
 pydantic-settings==2.5.2
 prometheus-client==0.21.0
-python-json-logger==2.0.7
+python-json-logger==4.0.0
