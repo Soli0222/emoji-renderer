@@ -2,23 +2,15 @@
 
 import logging
 import uuid
-from typing import List
 
 from fastapi import APIRouter, HTTPException, Response
-from fastapi.responses import JSONResponse
 
-from src.api.schemas import (
-    RenderRequest,
-    FontSchema,
-    HealthResponse,
-    ErrorResponse
-)
+from src.api.schemas import ErrorResponse, FontSchema, HealthResponse, RenderRequest
+from src.config import settings
+from src.core.animation import Intensity, MotionConfig, MotionType
 from src.core.engine import rendering_engine
 from src.core.fonts import font_manager
-from src.core.text import TextStyle, LayoutConfig
-from src.core.animation import MotionConfig, MotionType, Intensity
-from src.config import settings
-
+from src.core.text import LayoutConfig, TextStyle
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +30,7 @@ async def health_check():
 
 @router.get(
     "/fonts",
-    response_model=List[FontSchema],
+    response_model=list[FontSchema],
     summary="List available fonts",
     description="Returns a list of installed fonts available for rendering."
 )
@@ -84,9 +76,9 @@ async def list_fonts():
 async def generate_emoji(request: RenderRequest):
     """Generate an emoji image or animation."""
     request_id = str(uuid.uuid4())[:8]
-    
+
     logger.info(
-        f"Generate request",
+        "Generate request",
         extra={
             "requestId": request_id,
             "text_length": len(request.text),
@@ -94,7 +86,7 @@ async def generate_emoji(request: RenderRequest):
             "motion_type": request.motion.type
         }
     )
-    
+
     # Validate font exists
     if not font_manager.font_exists(request.style.fontId):
         logger.warning(
@@ -105,7 +97,7 @@ async def generate_emoji(request: RenderRequest):
             status_code=422,
             detail=f"Font not found: {request.style.fontId}"
         )
-    
+
     try:
         # Convert request to internal models
         style = TextStyle(
@@ -115,18 +107,18 @@ async def generate_emoji(request: RenderRequest):
             outline_width=request.style.outlineWidth,
             shadow=request.style.shadow
         )
-        
+
         layout = LayoutConfig(
             mode=request.layout.mode,
             alignment=request.layout.alignment
         )
-        
+
         motion = MotionConfig(
             type=MotionType(request.motion.type),
             intensity=Intensity(request.motion.intensity),
             speed=request.motion.speed
         )
-        
+
         # Render the image
         result = rendering_engine.render(
             text=request.text,
@@ -134,7 +126,7 @@ async def generate_emoji(request: RenderRequest):
             layout=layout,
             motion=motion
         )
-        
+
         # Check size limit
         if not rendering_engine.check_size_limit(result.data):
             logger.warning(
@@ -145,15 +137,15 @@ async def generate_emoji(request: RenderRequest):
                 status_code=400,
                 detail=f"Output size ({result.size_bytes / 1024:.1f}KB) exceeds limit ({settings.max_image_size_kb}KB)"
             )
-        
+
         # Determine content type
         if result.format == "webp":
             media_type = "image/webp"
         else:
             media_type = "image/apng"
-        
+
         logger.info(
-            f"Generate success",
+            "Generate success",
             extra={
                 "requestId": request_id,
                 "latency_ms": result.render_time_ms,
@@ -161,19 +153,23 @@ async def generate_emoji(request: RenderRequest):
                 "output_size_bytes": result.size_bytes
             }
         )
-        
+
         return Response(
             content=result.data,
             media_type=media_type
         )
-    
+
     except ValueError as e:
         logger.warning(
             f"Validation error: {str(e)}",
             extra={"requestId": request_id}
         )
-        raise HTTPException(status_code=422, detail=str(e))
-    
+        raise HTTPException(status_code=422, detail=str(e)) from None
+
+    except HTTPException:
+        # Re-raise HTTP exceptions as-is
+        raise
+
     except Exception as e:
         logger.exception(
             f"Rendering error: {str(e)}",
@@ -182,4 +178,4 @@ async def generate_emoji(request: RenderRequest):
         raise HTTPException(
             status_code=500,
             detail="Internal rendering error"
-        )
+        ) from e

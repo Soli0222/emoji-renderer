@@ -1,11 +1,11 @@
 """Pydantic models for API request/response schemas."""
 
 import re
-from typing import Optional, List, Literal
+from typing import Literal
+
 from pydantic import BaseModel, Field, field_validator
 
 from src.config import settings
-
 
 # Regex pattern for hex color validation
 HEX_COLOR_PATTERN = re.compile(r'^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$')
@@ -13,7 +13,7 @@ HEX_COLOR_PATTERN = re.compile(r'^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$')
 
 class LayoutSchema(BaseModel):
     """Layout configuration for the rendered image."""
-    
+
     mode: Literal["square", "banner"] = Field(
         default="square",
         description="Canvas sizing mode. 'square': 256x256 fixed. 'banner': height 256, width dynamic."
@@ -26,7 +26,7 @@ class LayoutSchema(BaseModel):
 
 class StyleSchema(BaseModel):
     """Text styling configuration."""
-    
+
     fontId: str = Field(
         ...,
         description="Must match an ID returned by /fonts.",
@@ -51,7 +51,7 @@ class StyleSchema(BaseModel):
         default=False,
         description="Enable drop shadow effect."
     )
-    
+
     @field_validator('textColor', 'outlineColor')
     @classmethod
     def validate_hex_color(cls, v: str) -> str:
@@ -63,7 +63,7 @@ class StyleSchema(BaseModel):
 
 class MotionSchema(BaseModel):
     """Animation/motion configuration."""
-    
+
     type: Literal["none", "shake", "spin", "bounce", "gaming"] = Field(
         default="none",
         description="Animation type. 'none' outputs static WebP."
@@ -82,7 +82,7 @@ class MotionSchema(BaseModel):
 
 class RenderRequest(BaseModel):
     """Request schema for /generate endpoint."""
-    
+
     text: str = Field(
         ...,
         description="The text content to render. Newlines (\\n) are supported.",
@@ -100,7 +100,7 @@ class RenderRequest(BaseModel):
         default_factory=MotionSchema,
         description="Animation settings."
     )
-    
+
     @field_validator('text')
     @classmethod
     def validate_text(cls, v: str) -> str:
@@ -114,7 +114,7 @@ class RenderRequest(BaseModel):
 
 class FontSchema(BaseModel):
     """Font information schema."""
-    
+
     id: str = Field(
         ...,
         description="The ID to send in the /generate request."
@@ -123,7 +123,7 @@ class FontSchema(BaseModel):
         ...,
         description="Human readable name."
     )
-    categories: List[Literal["serif", "sans-serif", "handwritten", "display"]] = Field(
+    categories: list[str] = Field(
         default_factory=list,
         description="Font categories."
     )
@@ -131,7 +131,7 @@ class FontSchema(BaseModel):
 
 class HealthResponse(BaseModel):
     """Health check response schema."""
-    
+
     status: str = Field(
         default="ok",
         description="Health status."
@@ -140,7 +140,7 @@ class HealthResponse(BaseModel):
 
 class ErrorResponse(BaseModel):
     """Error response schema."""
-    
+
     detail: str = Field(
         ...,
         description="Error message."
