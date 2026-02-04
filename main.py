@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from prometheus_client import REGISTRY, Counter, Histogram, start_http_server
-from pythonjsonlogger import jsonlogger
+from pythonjsonlogger.json import JsonFormatter
 
 from src.api.routes import router
 from src.config import settings
@@ -23,7 +23,7 @@ def setup_logging():
     # Avoid adding duplicate handlers
     if not logger.handlers:
         handler = logging.StreamHandler(sys.stdout)
-        formatter = jsonlogger.JsonFormatter(
+        formatter = JsonFormatter(
             '%(asctime)s %(levelname)s %(name)s %(message)s',
             datefmt='%Y-%m-%dT%H:%M:%S'
         )
