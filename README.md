@@ -77,7 +77,7 @@ Content-Type: application/json
     "alignment": "center"
   },
   "style": {
-    "fontId": "noto_sans_jp_black",
+    "fontId": "notosansjp_regular",
     "textColor": "#FF0000",
     "outlineColor": "#FFFFFF",
     "outlineWidth": 5,
