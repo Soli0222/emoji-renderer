@@ -112,7 +112,7 @@ class TextRenderer:
         text_height = bbox[3] - bbox[1]
 
         width = text_width + (PADDING * 2) + (outline_width * 2)
-        height = max(DEFAULT_HEIGHT, text_height + (PADDING * 2) + (outline_width * 2))
+        height = text_height + (PADDING * 2) + (outline_width * 2)
 
         return (width, height)
 
