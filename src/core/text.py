@@ -136,7 +136,7 @@ class TextRenderer:
         temp_draw = ImageDraw.Draw(temp_img)
 
         bbox = temp_draw.multiline_textbbox((0, 0), text, font=font)
-        return bbox
+        return (int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3]))
 
     def render_text(
         self,
