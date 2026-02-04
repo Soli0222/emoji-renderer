@@ -134,8 +134,8 @@ class TestTextRenderer:
 
             # Width should accommodate text plus padding
             assert width > (PADDING * 2)
-            # Height should be at least DEFAULT_HEIGHT
-            assert height >= DEFAULT_HEIGHT
+            # Height should accommodate text plus padding (dynamic sizing)
+            assert height > (PADDING * 2)
 
     def test_render_text_square_mode(self, renderer):
         """Test rendering in square mode produces correct size image."""
