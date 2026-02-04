@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class FontInfo:
     """Information about an available font."""
+
     id: str
     name: str
     path: str
@@ -59,7 +60,7 @@ class FontManager:
             return
 
         # Scan for font files
-        font_extensions = {'.ttf', '.otf', '.ttc', '.woff', '.woff2'}
+        font_extensions = {".ttf", ".otf", ".ttc", ".woff", ".woff2"}
 
         for font_file in font_path.iterdir():
             if font_file.suffix.lower() in font_extensions:
@@ -71,7 +72,7 @@ class FontManager:
                     id=font_id,
                     name=font_name,
                     path=str(font_file.absolute()),
-                    categories=categories
+                    categories=categories,
                 )
                 logger.info(f"Loaded font: {font_id} from {font_file.name}")
 
@@ -89,11 +90,11 @@ class FontManager:
         """
         # Convert to lowercase and replace spaces/hyphens with underscores
         font_id = filename.lower()
-        font_id = font_id.replace(' ', '_')
-        font_id = font_id.replace('-', '_')
+        font_id = font_id.replace(" ", "_")
+        font_id = font_id.replace("-", "_")
         # Remove consecutive underscores
-        while '__' in font_id:
-            font_id = font_id.replace('__', '_')
+        while "__" in font_id:
+            font_id = font_id.replace("__", "_")
         return font_id
 
     def _generate_font_name(self, filename: str) -> str:
@@ -107,7 +108,7 @@ class FontManager:
             Human-readable font name
         """
         # Replace underscores and hyphens with spaces, then title case
-        name = filename.replace('_', ' ').replace('-', ' ')
+        name = filename.replace("_", " ").replace("-", " ")
         return name.title()
 
     def _detect_categories(self, filename: str) -> list[str]:
@@ -123,18 +124,18 @@ class FontManager:
         categories = []
         filename_lower = filename.lower()
 
-        if 'serif' in filename_lower and 'sans' not in filename_lower:
-            categories.append('serif')
-        if 'sans' in filename_lower:
-            categories.append('sans-serif')
-        if any(word in filename_lower for word in ['hand', 'script', 'cursive']):
-            categories.append('handwritten')
-        if any(word in filename_lower for word in ['display', 'decorative', 'fancy']):
-            categories.append('display')
+        if "serif" in filename_lower and "sans" not in filename_lower:
+            categories.append("serif")
+        if "sans" in filename_lower:
+            categories.append("sans-serif")
+        if any(word in filename_lower for word in ["hand", "script", "cursive"]):
+            categories.append("handwritten")
+        if any(word in filename_lower for word in ["display", "decorative", "fancy"]):
+            categories.append("display")
 
         # Default to sans-serif if no category detected
         if not categories:
-            categories.append('sans-serif')
+            categories.append("sans-serif")
 
         return categories
 
@@ -159,9 +160,7 @@ class FontManager:
 
         if cache_key not in self._font_cache:
             font_info = self._fonts[font_id]
-            self._font_cache[cache_key] = ImageFont.truetype(
-                font_info.path, size=size
-            )
+            self._font_cache[cache_key] = ImageFont.truetype(font_info.path, size=size)
 
         return self._font_cache[cache_key]
 

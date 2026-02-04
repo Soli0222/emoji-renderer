@@ -22,10 +22,7 @@ class TestTextStyle:
 
     def test_default_values(self):
         """Test default values are set correctly."""
-        style = TextStyle(
-            font_id="test_font",
-            text_color="#FF0000"
-        )
+        style = TextStyle(font_id="test_font", text_color="#FF0000")
         assert style.font_id == "test_font"
         assert style.text_color == "#FF0000"
         assert style.outline_color == "#FFFFFF"
@@ -39,7 +36,7 @@ class TestTextStyle:
             text_color="#00FF00",
             outline_color="#0000FF",
             outline_width=5,
-            shadow=True
+            shadow=True,
         )
         assert style.outline_color == "#0000FF"
         assert style.outline_width == 5
@@ -84,36 +81,27 @@ class TestTextRenderer:
 
     def test_calculate_font_size_for_square_basic(self, renderer):
         """Test font size calculation returns valid size."""
-        with patch('src.core.text.font_manager') as mock_fm:
+        with patch("src.core.text.font_manager") as mock_fm:
             from PIL import ImageFont
+
             mock_fm.get_font.return_value = ImageFont.load_default()
 
-            size = renderer.calculate_font_size_for_square(
-                "Test",
-                "test_font",
-                SQUARE_SIZE,
-                0
-            )
+            size = renderer.calculate_font_size_for_square("Test", "test_font", SQUARE_SIZE, 0)
             assert MIN_FONT_SIZE <= size <= MAX_FONT_SIZE
 
     def test_calculate_font_size_accounts_for_outline(self, renderer):
         """Test font size calculation accounts for outline width."""
-        with patch('src.core.text.font_manager') as mock_fm:
+        with patch("src.core.text.font_manager") as mock_fm:
             from PIL import ImageFont
+
             mock_fm.get_font.return_value = ImageFont.load_default()
 
             size_no_outline = renderer.calculate_font_size_for_square(
-                "Test",
-                "test_font",
-                SQUARE_SIZE,
-                0
+                "Test", "test_font", SQUARE_SIZE, 0
             )
 
             size_with_outline = renderer.calculate_font_size_for_square(
-                "Test",
-                "test_font",
-                SQUARE_SIZE,
-                10
+                "Test", "test_font", SQUARE_SIZE, 10
             )
 
             # With outline, available space is less, so font should be same or smaller
@@ -121,16 +109,12 @@ class TestTextRenderer:
 
     def test_calculate_banner_dimensions(self, renderer):
         """Test banner dimension calculation."""
-        with patch('src.core.text.font_manager') as mock_fm:
+        with patch("src.core.text.font_manager") as mock_fm:
             from PIL import ImageFont
+
             mock_fm.get_font.return_value = ImageFont.load_default()
 
-            width, height = renderer.calculate_banner_dimensions(
-                "Test Text",
-                "test_font",
-                64,
-                0
-            )
+            width, height = renderer.calculate_banner_dimensions("Test Text", "test_font", 64, 0)
 
             # Width should accommodate text plus padding
             assert width > (PADDING * 2)
@@ -142,8 +126,9 @@ class TestTextRenderer:
         style = TextStyle(font_id="test_font", text_color="#FF0000")
         layout = LayoutConfig(mode="square", alignment="center")
 
-        with patch('src.core.text.font_manager') as mock_fm:
+        with patch("src.core.text.font_manager") as mock_fm:
             from PIL import ImageFont
+
             mock_fm.get_font.return_value = ImageFont.load_default()
 
             image = renderer.render_text("Test", style, layout)
@@ -157,8 +142,9 @@ class TestTextRenderer:
         style = TextStyle(font_id="test_font", text_color="#FF0000")
         layout = LayoutConfig(mode="banner", alignment="center")
 
-        with patch('src.core.text.font_manager') as mock_fm:
+        with patch("src.core.text.font_manager") as mock_fm:
             from PIL import ImageFont
+
             mock_fm.get_font.return_value = ImageFont.load_default()
 
             image = renderer.render_text("Test Text", style, layout)
@@ -171,8 +157,9 @@ class TestTextRenderer:
         style = TextStyle(font_id="test_font", text_color="#FF0000")
         layout = LayoutConfig(mode="square", alignment="left")
 
-        with patch('src.core.text.font_manager') as mock_fm:
+        with patch("src.core.text.font_manager") as mock_fm:
             from PIL import ImageFont
+
             mock_fm.get_font.return_value = ImageFont.load_default()
 
             image = renderer.render_text("Test", style, layout)
@@ -183,8 +170,9 @@ class TestTextRenderer:
         style = TextStyle(font_id="test_font", text_color="#FF0000")
         layout = LayoutConfig(mode="square", alignment="right")
 
-        with patch('src.core.text.font_manager') as mock_fm:
+        with patch("src.core.text.font_manager") as mock_fm:
             from PIL import ImageFont
+
             mock_fm.get_font.return_value = ImageFont.load_default()
 
             image = renderer.render_text("Test", style, layout)
@@ -193,15 +181,13 @@ class TestTextRenderer:
     def test_render_text_with_outline(self, renderer):
         """Test rendering with outline."""
         style = TextStyle(
-            font_id="test_font",
-            text_color="#FF0000",
-            outline_color="#000000",
-            outline_width=3
+            font_id="test_font", text_color="#FF0000", outline_color="#000000", outline_width=3
         )
         layout = LayoutConfig()
 
-        with patch('src.core.text.font_manager') as mock_fm:
+        with patch("src.core.text.font_manager") as mock_fm:
             from PIL import ImageFont
+
             mock_fm.get_font.return_value = ImageFont.load_default()
 
             image = renderer.render_text("Test", style, layout)
@@ -209,15 +195,12 @@ class TestTextRenderer:
 
     def test_render_text_with_shadow(self, renderer):
         """Test rendering with shadow effect."""
-        style = TextStyle(
-            font_id="test_font",
-            text_color="#FF0000",
-            shadow=True
-        )
+        style = TextStyle(font_id="test_font", text_color="#FF0000", shadow=True)
         layout = LayoutConfig()
 
-        with patch('src.core.text.font_manager') as mock_fm:
+        with patch("src.core.text.font_manager") as mock_fm:
             from PIL import ImageFont
+
             mock_fm.get_font.return_value = ImageFont.load_default()
 
             image = renderer.render_text("Test", style, layout)
@@ -230,8 +213,9 @@ class TestTextRenderer:
         layout = LayoutConfig()
         custom_color = (0, 255, 0)
 
-        with patch('src.core.text.font_manager') as mock_fm:
+        with patch("src.core.text.font_manager") as mock_fm:
             from PIL import ImageFont
+
             mock_fm.get_font.return_value = ImageFont.load_default()
 
             image = renderer.render_text("Test", style, layout, custom_text_color=custom_color)
@@ -242,8 +226,9 @@ class TestTextRenderer:
         style = TextStyle(font_id="test_font", text_color="#FF0000")
         layout = LayoutConfig()
 
-        with patch('src.core.text.font_manager') as mock_fm:
+        with patch("src.core.text.font_manager") as mock_fm:
             from PIL import ImageFont
+
             mock_fm.get_font.return_value = ImageFont.load_default()
 
             image = renderer.render_text("Line 1\nLine 2", style, layout)
@@ -251,7 +236,7 @@ class TestTextRenderer:
 
     def test_add_shadow_creates_blurred_layer(self, renderer):
         """Test shadow creation."""
-        canvas = Image.new('RGBA', (256, 256), (0, 0, 0, 0))
+        canvas = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
         default_font = ImageFont.load_default()
 
         result = renderer._add_shadow(canvas, "Test", default_font, 100, 100, 0)

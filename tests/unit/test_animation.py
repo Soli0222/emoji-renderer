@@ -1,6 +1,5 @@
 """Unit tests for animation generation."""
 
-
 import pytest
 from PIL import Image
 
@@ -62,11 +61,7 @@ class TestMotionConfig:
 
     def test_custom_values(self):
         """Test custom motion config values."""
-        config = MotionConfig(
-            type=MotionType.SHAKE,
-            intensity=Intensity.HIGH,
-            speed=2.0
-        )
+        config = MotionConfig(type=MotionType.SHAKE, intensity=Intensity.HIGH, speed=2.0)
         assert config.type == MotionType.SHAKE
         assert config.intensity == Intensity.HIGH
         assert config.speed == 2.0
@@ -83,7 +78,7 @@ class TestAnimationGenerator:
     @pytest.fixture
     def test_image(self):
         """Create a test image for animation."""
-        img = Image.new('RGBA', (256, 256), (0, 0, 0, 0))
+        img = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
         # Draw something visible
         for x in range(100, 156):
             for y in range(100, 156):
@@ -191,9 +186,7 @@ class TestAnimationGenerator:
         """Test shake frames have random displacement."""
         MotionConfig(type=MotionType.SHAKE, intensity=Intensity.MEDIUM)
         frames = generator._generate_shake_frames(
-            test_image,
-            10,
-            INTENSITY_MULTIPLIERS[Intensity.MEDIUM]
+            test_image, 10, INTENSITY_MULTIPLIERS[Intensity.MEDIUM]
         )
 
         assert len(frames) == 10
@@ -214,9 +207,7 @@ class TestAnimationGenerator:
     def test_bounce_frames_vertical_offset(self, generator, test_image):
         """Test bounce frames have vertical offset."""
         frames = generator._generate_bounce_frames(
-            test_image,
-            10,
-            INTENSITY_MULTIPLIERS[Intensity.MEDIUM]
+            test_image, 10, INTENSITY_MULTIPLIERS[Intensity.MEDIUM]
         )
 
         assert len(frames) == 10
@@ -231,12 +222,7 @@ class TestAnimationGenerator:
             callback_calls.append(color)
             return test_image.copy()
 
-        frames = generator._generate_gaming_frames(
-            test_image,
-            5,
-            "#FF0000",
-            render_callback
-        )
+        frames = generator._generate_gaming_frames(test_image, 5, "#FF0000", render_callback)
 
         assert len(frames) == 5
         assert len(callback_calls) == 5
@@ -250,7 +236,7 @@ class TestAnimationGenerator:
             test_image,
             5,
             "#FF0000",
-            None  # No callback
+            None,  # No callback
         )
 
         assert len(frames) == 5
@@ -266,7 +252,7 @@ class TestAnimationGenerator:
 
     def test_apply_hue_shift_no_visible_pixels(self, generator):
         """Test hue shift on transparent image."""
-        transparent = Image.new('RGBA', (100, 100), (0, 0, 0, 0))
+        transparent = Image.new("RGBA", (100, 100), (0, 0, 0, 0))
         shifted = generator._apply_hue_shift(transparent, 90)
 
         assert shifted.size == transparent.size
@@ -310,7 +296,7 @@ class TestAnimationGeneratorIntegration:
     @pytest.fixture
     def colored_image(self):
         """Create an image with visible content."""
-        img = Image.new('RGBA', (256, 256), (0, 0, 0, 0))
+        img = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
         # Add a colored square in the center
         for x in range(78, 178):
             for y in range(78, 178):
@@ -320,41 +306,29 @@ class TestAnimationGeneratorIntegration:
     def test_full_animation_pipeline_shake(self, colored_image):
         """Test full shake animation pipeline."""
         generator = AnimationGenerator()
-        motion = MotionConfig(
-            type=MotionType.SHAKE,
-            intensity=Intensity.MEDIUM,
-            speed=1.0
-        )
+        motion = MotionConfig(type=MotionType.SHAKE, intensity=Intensity.MEDIUM, speed=1.0)
 
         frames = generator.generate_frames(colored_image, motion)
 
         assert len(frames) == 20  # 20 fps * 1 second
-        assert all(f.mode == 'RGBA' for f in frames)
+        assert all(f.mode == "RGBA" for f in frames)
 
     def test_full_animation_pipeline_spin(self, colored_image):
         """Test full spin animation pipeline."""
         generator = AnimationGenerator()
-        motion = MotionConfig(
-            type=MotionType.SPIN,
-            intensity=Intensity.MEDIUM,
-            speed=1.0
-        )
+        motion = MotionConfig(type=MotionType.SPIN, intensity=Intensity.MEDIUM, speed=1.0)
 
         frames = generator.generate_frames(colored_image, motion)
 
         assert len(frames) == 20
-        assert all(f.mode == 'RGBA' for f in frames)
+        assert all(f.mode == "RGBA" for f in frames)
 
     def test_full_animation_pipeline_bounce(self, colored_image):
         """Test full bounce animation pipeline."""
         generator = AnimationGenerator()
-        motion = MotionConfig(
-            type=MotionType.BOUNCE,
-            intensity=Intensity.HIGH,
-            speed=1.0
-        )
+        motion = MotionConfig(type=MotionType.BOUNCE, intensity=Intensity.HIGH, speed=1.0)
 
         frames = generator.generate_frames(colored_image, motion)
 
         assert len(frames) == 20
-        assert all(f.mode == 'RGBA' for f in frames)
+        assert all(f.mode == "RGBA" for f in frames)

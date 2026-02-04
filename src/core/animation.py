@@ -5,7 +5,7 @@ import math
 import random
 from collections.abc import Callable
 from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 
 import numpy as np
 from PIL import Image
@@ -21,8 +21,9 @@ DEFAULT_DURATION = 1.0  # seconds
 FRAME_DURATION_MS = 50  # 1000 / 20 fps
 
 
-class MotionType(str, Enum):
+class MotionType(StrEnum):
     """Animation motion types."""
+
     NONE = "none"
     SHAKE = "shake"
     SPIN = "spin"
@@ -30,8 +31,9 @@ class MotionType(str, Enum):
     GAMING = "gaming"
 
 
-class Intensity(str, Enum):
+class Intensity(StrEnum):
     """Animation intensity levels."""
+
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -40,17 +42,14 @@ class Intensity(str, Enum):
 @dataclass
 class MotionConfig:
     """Motion/animation configuration."""
+
     type: MotionType = MotionType.NONE
     intensity: Intensity = Intensity.MEDIUM
     speed: float = 1.0
 
 
 # Intensity multipliers for different effects
-INTENSITY_MULTIPLIERS = {
-    Intensity.LOW: 0.5,
-    Intensity.MEDIUM: 1.0,
-    Intensity.HIGH: 2.0
-}
+INTENSITY_MULTIPLIERS = {Intensity.LOW: 0.5, Intensity.MEDIUM: 1.0, Intensity.HIGH: 2.0}
 
 
 class AnimationGenerator:
@@ -85,7 +84,7 @@ class AnimationGenerator:
         base_image: Image.Image,
         motion: MotionConfig,
         text_color: str = "#FFFFFF",
-        render_callback: Callable | None = None
+        render_callback: Callable | None = None,
     ) -> list[Image.Image]:
         """
         Generate animation frames for the specified motion type.
@@ -119,10 +118,7 @@ class AnimationGenerator:
         return [base_image]
 
     def _generate_shake_frames(
-        self,
-        base_image: Image.Image,
-        frame_count: int,
-        intensity_mult: float
+        self, base_image: Image.Image, frame_count: int, intensity_mult: float
     ) -> list[Image.Image]:
         """
         Generate shake animation frames.
@@ -148,17 +144,13 @@ class AnimationGenerator:
             dy = random.randint(-shake_range, shake_range)
 
             # Create new canvas and paste shifted image
-            frame = Image.new('RGBA', base_image.size, (0, 0, 0, 0))
+            frame = Image.new("RGBA", base_image.size, (0, 0, 0, 0))
             frame.paste(base_image, (dx, dy), base_image)
             frames.append(frame)
 
         return frames
 
-    def _generate_spin_frames(
-        self,
-        base_image: Image.Image,
-        frame_count: int
-    ) -> list[Image.Image]:
+    def _generate_spin_frames(self, base_image: Image.Image, frame_count: int) -> list[Image.Image]:
         """
         Generate spin animation frames.
 
@@ -180,17 +172,14 @@ class AnimationGenerator:
                 angle,
                 expand=False,
                 center=(base_image.width // 2, base_image.height // 2),
-                resample=Image.Resampling.BICUBIC
+                resample=Image.Resampling.BICUBIC,
             )
             frames.append(rotated)
 
         return frames
 
     def _generate_bounce_frames(
-        self,
-        base_image: Image.Image,
-        frame_count: int,
-        intensity_mult: float
+        self, base_image: Image.Image, frame_count: int, intensity_mult: float
     ) -> list[Image.Image]:
         """
         Generate bounce animation frames.
@@ -213,7 +202,7 @@ class AnimationGenerator:
             dy = int(math.sin(t) * amplitude)
 
             # Create new canvas and paste shifted image
-            frame = Image.new('RGBA', base_image.size, (0, 0, 0, 0))
+            frame = Image.new("RGBA", base_image.size, (0, 0, 0, 0))
             frame.paste(base_image, (0, dy), base_image)
             frames.append(frame)
 
@@ -224,7 +213,7 @@ class AnimationGenerator:
         base_image: Image.Image,
         frame_count: int,
         text_color: str,
-        render_callback: Callable | None
+        render_callback: Callable | None,
     ) -> list[Image.Image]:
         """
         Generate gaming (rainbow) animation frames.
@@ -269,7 +258,7 @@ class AnimationGenerator:
             Image with shifted hue
         """
         # Convert to numpy array
-        arr = np.array(image.convert('RGBA'))
+        arr = np.array(image.convert("RGBA"))
 
         # Only process non-transparent pixels
         alpha = arr[:, :, 3]
@@ -348,7 +337,7 @@ class AnimationGenerator:
         result[:, :, 1][mask] = g_new[mask]
         result[:, :, 2][mask] = b_new[mask]
 
-        return Image.fromarray(result, 'RGBA')
+        return Image.fromarray(result, "RGBA")
 
 
 # Global animation generator instance

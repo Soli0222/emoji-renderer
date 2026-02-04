@@ -16,6 +16,7 @@ def reset_singletons():
     """Reset singleton instances between tests."""
     # Reset FontManager singleton
     from src.core.fonts import FontManager
+
     FontManager._instance = None
     FontManager._fonts = {}
     FontManager._font_cache = {}
@@ -37,7 +38,7 @@ def test_font_dir(tmp_path):
 @pytest.fixture
 def mock_settings():
     """Mock application settings."""
-    with patch('src.config.settings') as mock:
+    with patch("src.config.settings") as mock:
         mock.log_level = "INFO"
         mock.max_text_length = 20
         mock.max_image_size_kb = 1024
@@ -53,7 +54,8 @@ def mock_settings():
 def sample_image():
     """Create a sample RGBA image for testing."""
     from PIL import Image
-    img = Image.new('RGBA', (256, 256), (0, 0, 0, 0))
+
+    img = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
     # Draw a simple colored square
     for x in range(50, 206):
         for y in range(50, 206):
@@ -65,7 +67,8 @@ def sample_image():
 def sample_transparent_image():
     """Create a fully transparent image for testing."""
     from PIL import Image
-    return Image.new('RGBA', (256, 256), (0, 0, 0, 0))
+
+    return Image.new("RGBA", (256, 256), (0, 0, 0, 0))
 
 
 @pytest.fixture

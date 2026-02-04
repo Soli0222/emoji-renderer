@@ -21,7 +21,7 @@ router = APIRouter()
     "/health",
     response_model=HealthResponse,
     summary="Health Check",
-    description="Returns the health status of the service."
+    description="Returns the health status of the service.",
 )
 async def health_check():
     """Health check endpoint."""
@@ -32,19 +32,12 @@ async def health_check():
     "/fonts",
     response_model=list[FontSchema],
     summary="List available fonts",
-    description="Returns a list of installed fonts available for rendering."
+    description="Returns a list of installed fonts available for rendering.",
 )
 async def list_fonts():
     """List all available fonts."""
     fonts = font_manager.list_fonts()
-    return [
-        FontSchema(
-            id=font.id,
-            name=font.name,
-            categories=font.categories
-        )
-        for font in fonts
-    ]
+    return [FontSchema(id=font.id, name=font.name, categories=font.categories) for font in fonts]
 
 
 @router.post(
@@ -56,22 +49,19 @@ async def list_fonts():
             "description": "Image generated successfully.",
             "content": {
                 "image/webp": {"schema": {"type": "string", "format": "binary"}},
-                "image/apng": {"schema": {"type": "string", "format": "binary"}}
-            }
+                "image/apng": {"schema": {"type": "string", "format": "binary"}},
+            },
         },
         400: {
             "description": "Bad Request (e.g., output size exceeds limit)",
-            "model": ErrorResponse
+            "model": ErrorResponse,
         },
         422: {
             "description": "Validation Error (e.g., invalid hex code, unknown font ID)",
-            "model": ErrorResponse
+            "model": ErrorResponse,
         },
-        500: {
-            "description": "Rendering Engine Error",
-            "model": ErrorResponse
-        }
-    }
+        500: {"description": "Rendering Engine Error", "model": ErrorResponse},
+    },
 )
 async def generate_emoji(request: RenderRequest):
     """Generate an emoji image or animation."""
@@ -83,20 +73,14 @@ async def generate_emoji(request: RenderRequest):
             "requestId": request_id,
             "text_length": len(request.text),
             "font_id": request.style.fontId,
-            "motion_type": request.motion.type
-        }
+            "motion_type": request.motion.type,
+        },
     )
 
     # Validate font exists
     if not font_manager.font_exists(request.style.fontId):
-        logger.warning(
-            f"Font not found: {request.style.fontId}",
-            extra={"requestId": request_id}
-        )
-        raise HTTPException(
-            status_code=422,
-            detail=f"Font not found: {request.style.fontId}"
-        )
+        logger.warning(f"Font not found: {request.style.fontId}", extra={"requestId": request_id})
+        raise HTTPException(status_code=422, detail=f"Font not found: {request.style.fontId}")
 
     try:
         # Convert request to internal models
@@ -105,37 +89,31 @@ async def generate_emoji(request: RenderRequest):
             text_color=request.style.textColor,
             outline_color=request.style.outlineColor,
             outline_width=request.style.outlineWidth,
-            shadow=request.style.shadow
+            shadow=request.style.shadow,
         )
 
-        layout = LayoutConfig(
-            mode=request.layout.mode,
-            alignment=request.layout.alignment
-        )
+        layout = LayoutConfig(mode=request.layout.mode, alignment=request.layout.alignment)
 
         motion = MotionConfig(
             type=MotionType(request.motion.type),
             intensity=Intensity(request.motion.intensity),
-            speed=request.motion.speed
+            speed=request.motion.speed,
         )
 
         # Render the image
         result = rendering_engine.render(
-            text=request.text,
-            style=style,
-            layout=layout,
-            motion=motion
+            text=request.text, style=style, layout=layout, motion=motion
         )
 
         # Check size limit
         if not rendering_engine.check_size_limit(result.data):
             logger.warning(
                 f"Output size exceeds limit: {result.size_bytes} bytes",
-                extra={"requestId": request_id}
+                extra={"requestId": request_id},
             )
             raise HTTPException(
                 status_code=400,
-                detail=f"Output size ({result.size_bytes / 1024:.1f}KB) exceeds limit ({settings.max_image_size_kb}KB)"
+                detail=f"Output size ({result.size_bytes / 1024:.1f}KB) exceeds limit ({settings.max_image_size_kb}KB)",
             )
 
         # Determine content type
@@ -150,20 +128,14 @@ async def generate_emoji(request: RenderRequest):
                 "requestId": request_id,
                 "latency_ms": result.render_time_ms,
                 "output_format": result.format,
-                "output_size_bytes": result.size_bytes
-            }
+                "output_size_bytes": result.size_bytes,
+            },
         )
 
-        return Response(
-            content=result.data,
-            media_type=media_type
-        )
+        return Response(content=result.data, media_type=media_type)
 
     except ValueError as e:
-        logger.warning(
-            f"Validation error: {str(e)}",
-            extra={"requestId": request_id}
-        )
+        logger.warning(f"Validation error: {str(e)}", extra={"requestId": request_id})
         raise HTTPException(status_code=422, detail=str(e)) from None
 
     except HTTPException:
@@ -171,11 +143,5 @@ async def generate_emoji(request: RenderRequest):
         raise
 
     except Exception as e:
-        logger.exception(
-            f"Rendering error: {str(e)}",
-            extra={"requestId": request_id}
-        )
-        raise HTTPException(
-            status_code=500,
-            detail="Internal rendering error"
-        ) from e
+        logger.exception(f"Rendering error: {str(e)}", extra={"requestId": request_id})
+        raise HTTPException(status_code=500, detail="Internal rendering error") from e

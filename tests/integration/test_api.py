@@ -45,20 +45,20 @@ class TestFontsEndpoint:
     @pytest.fixture
     def mock_font_manager(self):
         """Mock font manager."""
-        with patch('src.api.routes.font_manager') as mock:
+        with patch("src.api.routes.font_manager") as mock:
             mock.list_fonts.return_value = [
                 FontInfo(
                     id="noto_sans_jp_bold",
                     name="Noto Sans JP Bold",
                     path="/path/to/font.ttf",
-                    categories=["sans-serif"]
+                    categories=["sans-serif"],
                 ),
                 FontInfo(
                     id="roboto_regular",
                     name="Roboto Regular",
                     path="/path/to/roboto.ttf",
-                    categories=["sans-serif"]
-                )
+                    categories=["sans-serif"],
+                ),
             ]
             yield mock
 
@@ -82,7 +82,7 @@ class TestFontsEndpoint:
 
     def test_list_fonts_empty(self, client):
         """Test fonts endpoint with no fonts."""
-        with patch('src.api.routes.font_manager') as mock:
+        with patch("src.api.routes.font_manager") as mock:
             mock.list_fonts.return_value = []
 
             response = client.get("/fonts")
@@ -102,25 +102,22 @@ class TestGenerateEndpoint:
     @pytest.fixture
     def mock_font_manager(self):
         """Mock font manager."""
-        with patch('src.api.routes.font_manager') as mock:
+        with patch("src.api.routes.font_manager") as mock:
             mock.font_exists.return_value = True
             yield mock
 
     @pytest.fixture
     def mock_rendering_engine(self):
         """Mock rendering engine."""
-        with patch('src.api.routes.rendering_engine') as mock:
+        with patch("src.api.routes.rendering_engine") as mock:
             # Create a simple test image
-            img = Image.new('RGBA', (256, 256), (255, 0, 0, 255))
+            img = Image.new("RGBA", (256, 256), (255, 0, 0, 255))
             buffer = io.BytesIO()
-            img.save(buffer, format='WEBP')
+            img.save(buffer, format="WEBP")
             webp_data = buffer.getvalue()
 
             mock.render.return_value = RenderResult(
-                data=webp_data,
-                format="webp",
-                size_bytes=len(webp_data),
-                render_time_ms=50.0
+                data=webp_data, format="webp", size_bytes=len(webp_data), render_time_ms=50.0
             )
             mock.check_size_limit.return_value = True
             yield mock
@@ -128,15 +125,11 @@ class TestGenerateEndpoint:
     @pytest.fixture
     def valid_request(self):
         """Create valid request payload."""
-        return {
-            "text": "テスト",
-            "style": {
-                "fontId": "noto_sans_jp_bold",
-                "textColor": "#FF0000"
-            }
-        }
+        return {"text": "テスト", "style": {"fontId": "noto_sans_jp_bold", "textColor": "#FF0000"}}
 
-    def test_generate_static_image(self, client, mock_font_manager, mock_rendering_engine, valid_request):
+    def test_generate_static_image(
+        self, client, mock_font_manager, mock_rendering_engine, valid_request
+    ):
         """Test generating a static image."""
         response = client.post("/generate", json=valid_request)
 
@@ -147,14 +140,8 @@ class TestGenerateEndpoint:
         """Test generating with layout options."""
         request = {
             "text": "テスト",
-            "layout": {
-                "mode": "banner",
-                "alignment": "left"
-            },
-            "style": {
-                "fontId": "noto_sans_jp_bold",
-                "textColor": "#FF0000"
-            }
+            "layout": {"mode": "banner", "alignment": "left"},
+            "style": {"fontId": "noto_sans_jp_bold", "textColor": "#FF0000"},
         }
 
         response = client.post("/generate", json=request)
@@ -164,29 +151,19 @@ class TestGenerateEndpoint:
     def test_generate_with_animation(self, client, mock_font_manager, mock_rendering_engine):
         """Test generating with animation."""
         # Update mock for APNG output
-        img = Image.new('RGBA', (256, 256), (255, 0, 0, 255))
+        img = Image.new("RGBA", (256, 256), (255, 0, 0, 255))
         buffer = io.BytesIO()
-        img.save(buffer, format='PNG')
+        img.save(buffer, format="PNG")
         png_data = buffer.getvalue()
 
         mock_rendering_engine.render.return_value = RenderResult(
-            data=png_data,
-            format="apng",
-            size_bytes=len(png_data),
-            render_time_ms=100.0
+            data=png_data, format="apng", size_bytes=len(png_data), render_time_ms=100.0
         )
 
         request = {
             "text": "テスト",
-            "style": {
-                "fontId": "noto_sans_jp_bold",
-                "textColor": "#FF0000"
-            },
-            "motion": {
-                "type": "shake",
-                "intensity": "medium",
-                "speed": 1.0
-            }
+            "style": {"fontId": "noto_sans_jp_bold", "textColor": "#FF0000"},
+            "motion": {"type": "shake", "intensity": "medium", "speed": 1.0},
         }
 
         response = client.post("/generate", json=request)
@@ -196,15 +173,12 @@ class TestGenerateEndpoint:
 
     def test_generate_font_not_found(self, client, mock_rendering_engine):
         """Test error when font not found."""
-        with patch('src.api.routes.font_manager') as mock_fm:
+        with patch("src.api.routes.font_manager") as mock_fm:
             mock_fm.font_exists.return_value = False
 
             request = {
                 "text": "テスト",
-                "style": {
-                    "fontId": "nonexistent_font",
-                    "textColor": "#FF0000"
-                }
+                "style": {"fontId": "nonexistent_font", "textColor": "#FF0000"},
             }
 
             response = client.post("/generate", json=request)
@@ -216,10 +190,7 @@ class TestGenerateEndpoint:
         """Test error with invalid hex color."""
         request = {
             "text": "テスト",
-            "style": {
-                "fontId": "noto_sans_jp_bold",
-                "textColor": "invalid"
-            }
+            "style": {"fontId": "noto_sans_jp_bold", "textColor": "invalid"},
         }
 
         response = client.post("/generate", json=request)
@@ -228,13 +199,7 @@ class TestGenerateEndpoint:
 
     def test_generate_empty_text(self, client, mock_font_manager, mock_rendering_engine):
         """Test error with empty text."""
-        request = {
-            "text": "",
-            "style": {
-                "fontId": "noto_sans_jp_bold",
-                "textColor": "#FF0000"
-            }
-        }
+        request = {"text": "", "style": {"fontId": "noto_sans_jp_bold", "textColor": "#FF0000"}}
 
         response = client.post("/generate", json=request)
 
@@ -244,10 +209,7 @@ class TestGenerateEndpoint:
         """Test error when text exceeds limit."""
         request = {
             "text": "a" * 100,  # Exceeds max_text_length
-            "style": {
-                "fontId": "noto_sans_jp_bold",
-                "textColor": "#FF0000"
-            }
+            "style": {"fontId": "noto_sans_jp_bold", "textColor": "#FF0000"},
         }
 
         response = client.post("/generate", json=request)
@@ -256,15 +218,17 @@ class TestGenerateEndpoint:
 
     def test_generate_size_limit_exceeded(self, client, valid_request):
         """Test error when output size exceeds limit."""
-        with patch('src.api.routes.font_manager') as mock_fm, \
-             patch('src.api.routes.rendering_engine') as mock_engine:
+        with (
+            patch("src.api.routes.font_manager") as mock_fm,
+            patch("src.api.routes.rendering_engine") as mock_engine,
+        ):
             mock_fm.font_exists.return_value = True
             mock_engine.check_size_limit.return_value = False
             mock_engine.render.return_value = RenderResult(
                 data=b"x" * (2 * 1024 * 1024),
                 format="webp",
                 size_bytes=2 * 1024 * 1024,
-                render_time_ms=50.0
+                render_time_ms=50.0,
             )
 
             response = client.post("/generate", json=valid_request)
@@ -280,8 +244,8 @@ class TestGenerateEndpoint:
                 "fontId": "noto_sans_jp_bold",
                 "textColor": "#FF0000",
                 "outlineColor": "#000000",
-                "outlineWidth": 5
-            }
+                "outlineWidth": 5,
+            },
         }
 
         response = client.post("/generate", json=request)
@@ -292,11 +256,7 @@ class TestGenerateEndpoint:
         """Test generating with shadow."""
         request = {
             "text": "テスト",
-            "style": {
-                "fontId": "noto_sans_jp_bold",
-                "textColor": "#FF0000",
-                "shadow": True
-            }
+            "style": {"fontId": "noto_sans_jp_bold", "textColor": "#FF0000", "shadow": True},
         }
 
         response = client.post("/generate", json=request)
@@ -307,10 +267,7 @@ class TestGenerateEndpoint:
         """Test generating with multiline text."""
         request = {
             "text": "進捗\nどう？",
-            "style": {
-                "fontId": "noto_sans_jp_bold",
-                "textColor": "#FF0000"
-            }
+            "style": {"fontId": "noto_sans_jp_bold", "textColor": "#FF0000"},
         }
 
         response = client.post("/generate", json=request)
@@ -324,13 +281,8 @@ class TestGenerateEndpoint:
         for motion_type in motion_types:
             request = {
                 "text": "テスト",
-                "style": {
-                    "fontId": "noto_sans_jp_bold",
-                    "textColor": "#FF0000"
-                },
-                "motion": {
-                    "type": motion_type
-                }
+                "style": {"fontId": "noto_sans_jp_bold", "textColor": "#FF0000"},
+                "motion": {"type": motion_type},
             }
 
             response = client.post("/generate", json=request)
@@ -344,21 +296,17 @@ class TestGenerateEndpoint:
         for intensity in intensities:
             request = {
                 "text": "テスト",
-                "style": {
-                    "fontId": "noto_sans_jp_bold",
-                    "textColor": "#FF0000"
-                },
-                "motion": {
-                    "type": "shake",
-                    "intensity": intensity
-                }
+                "style": {"fontId": "noto_sans_jp_bold", "textColor": "#FF0000"},
+                "motion": {"type": "shake", "intensity": intensity},
             }
 
             response = client.post("/generate", json=request)
 
             assert response.status_code == 200, f"Failed for intensity: {intensity}"
 
-    def test_generate_rendering_error(self, client, mock_font_manager, mock_rendering_engine, valid_request):
+    def test_generate_rendering_error(
+        self, client, mock_font_manager, mock_rendering_engine, valid_request
+    ):
         """Test handling of rendering errors."""
         mock_rendering_engine.render.side_effect = Exception("Rendering failed")
 
@@ -367,7 +315,9 @@ class TestGenerateEndpoint:
         assert response.status_code == 500
         assert "Internal rendering error" in response.json()["detail"]
 
-    def test_generate_validation_error(self, client, mock_font_manager, mock_rendering_engine, valid_request):
+    def test_generate_validation_error(
+        self, client, mock_font_manager, mock_rendering_engine, valid_request
+    ):
         """Test handling of validation errors."""
         mock_rendering_engine.render.side_effect = ValueError("Invalid parameter")
 

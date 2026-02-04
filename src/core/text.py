@@ -22,6 +22,7 @@ PADDING = 10
 @dataclass
 class TextStyle:
     """Text styling options."""
+
     font_id: str
     text_color: str
     outline_color: str = "#FFFFFF"
@@ -32,6 +33,7 @@ class TextStyle:
 @dataclass
 class LayoutConfig:
     """Layout configuration."""
+
     mode: str = "square"  # "square" or "banner"
     alignment: str = "center"  # "left", "center", "right"
 
@@ -44,11 +46,7 @@ class TextRenderer:
         pass
 
     def calculate_font_size_for_square(
-        self,
-        text: str,
-        font_id: str,
-        canvas_size: int = SQUARE_SIZE,
-        outline_width: int = 0
+        self, text: str, font_id: str, canvas_size: int = SQUARE_SIZE, outline_width: int = 0
     ) -> int:
         """
         Calculate the maximum font size that fits text within a square canvas.
@@ -87,11 +85,7 @@ class TextRenderer:
         return best_size
 
     def calculate_banner_dimensions(
-        self,
-        text: str,
-        font_id: str,
-        font_size: int = 64,
-        outline_width: int = 0
+        self, text: str, font_id: str, font_size: int = 64, outline_width: int = 0
     ) -> tuple[int, int]:
         """
         Calculate canvas dimensions for banner mode.
@@ -117,9 +111,7 @@ class TextRenderer:
         return (width, height)
 
     def _get_multiline_bbox(
-        self,
-        text: str,
-        font: ImageFont.FreeTypeFont
+        self, text: str, font: ImageFont.FreeTypeFont
     ) -> tuple[int, int, int, int]:
         """
         Get bounding box for multiline text.
@@ -132,7 +124,7 @@ class TextRenderer:
             Bounding box as (left, top, right, bottom)
         """
         # Create a temporary image for measurement
-        temp_img = Image.new('RGBA', (1, 1))
+        temp_img = Image.new("RGBA", (1, 1))
         temp_draw = ImageDraw.Draw(temp_img)
 
         bbox = temp_draw.multiline_textbbox((0, 0), text, font=font)
@@ -143,7 +135,7 @@ class TextRenderer:
         text: str,
         style: TextStyle,
         layout: LayoutConfig,
-        custom_text_color: tuple[int, int, int] | None = None
+        custom_text_color: tuple[int, int, int] | None = None,
     ) -> Image.Image:
         """
         Render text to an image with the specified style and layout.
@@ -171,7 +163,7 @@ class TextRenderer:
             )
 
         # Create transparent canvas
-        canvas = Image.new('RGBA', (canvas_width, canvas_height), (0, 0, 0, 0))
+        canvas = Image.new("RGBA", (canvas_width, canvas_height), (0, 0, 0, 0))
 
         # Get font
         font = font_manager.get_font(style.font_id, font_size)
@@ -212,15 +204,11 @@ class TextRenderer:
                 fill=(*text_color, 255),
                 stroke_width=style.outline_width,
                 stroke_fill=(*outline_color, 255),
-                align=layout.alignment
+                align=layout.alignment,
             )
         else:
             draw.multiline_text(
-                (x, y),
-                text,
-                font=font,
-                fill=(*text_color, 255),
-                align=layout.alignment
+                (x, y), text, font=font, fill=(*text_color, 255), align=layout.alignment
             )
 
         return canvas
@@ -232,7 +220,7 @@ class TextRenderer:
         font: ImageFont.FreeTypeFont,
         x: int,
         y: int,
-        outline_width: int
+        outline_width: int,
     ) -> Image.Image:
         """
         Add a drop shadow behind the text.
@@ -252,7 +240,7 @@ class TextRenderer:
         shadow_blur = 5
 
         # Create shadow layer
-        shadow = Image.new('RGBA', canvas.size, (0, 0, 0, 0))
+        shadow = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
         shadow_draw = ImageDraw.Draw(shadow)
 
         # Draw shadow text (black, semi-transparent)
@@ -262,14 +250,14 @@ class TextRenderer:
             font=font,
             fill=(0, 0, 0, 128),
             stroke_width=outline_width,
-            stroke_fill=(0, 0, 0, 128)
+            stroke_fill=(0, 0, 0, 128),
         )
 
         # Apply Gaussian blur
         shadow = shadow.filter(ImageFilter.GaussianBlur(shadow_blur))
 
         # Composite shadow under canvas
-        result = Image.new('RGBA', canvas.size, (0, 0, 0, 0))
+        result = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
         result = Image.alpha_composite(result, shadow)
         result = Image.alpha_composite(result, canvas)
 

@@ -15,12 +15,7 @@ class TestRenderResult:
 
     def test_render_result_creation(self):
         """Test RenderResult dataclass creation."""
-        result = RenderResult(
-            data=b"test data",
-            format="webp",
-            size_bytes=9,
-            render_time_ms=100.5
-        )
+        result = RenderResult(data=b"test data", format="webp", size_bytes=9, render_time_ms=100.5)
 
         assert result.data == b"test data"
         assert result.format == "webp"
@@ -34,10 +29,7 @@ class TestRenderingEngine:
     @pytest.fixture
     def style(self):
         """Create a test style."""
-        return TextStyle(
-            font_id="test_font",
-            text_color="#FF0000"
-        )
+        return TextStyle(font_id="test_font", text_color="#FF0000")
 
     @pytest.fixture
     def layout(self):
@@ -47,7 +39,7 @@ class TestRenderingEngine:
     @pytest.fixture
     def test_image(self):
         """Create a test image."""
-        return Image.new('RGBA', (256, 256), (255, 0, 0, 255))
+        return Image.new("RGBA", (256, 256), (255, 0, 0, 255))
 
     def test_init(self):
         """Test engine initialization."""
@@ -60,7 +52,7 @@ class TestRenderingEngine:
         engine = RenderingEngine()
         motion = MotionConfig(type=MotionType.NONE)
 
-        with patch('src.core.engine.font_manager') as mock_fm:
+        with patch("src.core.engine.font_manager") as mock_fm:
             mock_fm.font_exists.return_value = True
             engine.text_renderer = MagicMock()
             engine.text_renderer.render_text.return_value = test_image
@@ -77,7 +69,7 @@ class TestRenderingEngine:
         engine = RenderingEngine()
         motion = MotionConfig(type=MotionType.SHAKE)
 
-        with patch('src.core.engine.font_manager') as mock_fm:
+        with patch("src.core.engine.font_manager") as mock_fm:
             mock_fm.font_exists.return_value = True
             engine.text_renderer = MagicMock()
             engine.text_renderer.render_text.return_value = test_image
@@ -93,7 +85,7 @@ class TestRenderingEngine:
         engine = RenderingEngine()
         motion = MotionConfig(type=MotionType.SPIN)
 
-        with patch('src.core.engine.font_manager') as mock_fm:
+        with patch("src.core.engine.font_manager") as mock_fm:
             mock_fm.font_exists.return_value = True
             engine.text_renderer = MagicMock()
             engine.text_renderer.render_text.return_value = test_image
@@ -109,7 +101,7 @@ class TestRenderingEngine:
         engine = RenderingEngine()
         motion = MotionConfig(type=MotionType.BOUNCE)
 
-        with patch('src.core.engine.font_manager') as mock_fm:
+        with patch("src.core.engine.font_manager") as mock_fm:
             mock_fm.font_exists.return_value = True
             engine.text_renderer = MagicMock()
             engine.text_renderer.render_text.return_value = test_image
@@ -125,7 +117,7 @@ class TestRenderingEngine:
         engine = RenderingEngine()
         motion = MotionConfig(type=MotionType.GAMING)
 
-        with patch('src.core.engine.font_manager') as mock_fm:
+        with patch("src.core.engine.font_manager") as mock_fm:
             mock_fm.font_exists.return_value = True
             engine.text_renderer = MagicMock()
             engine.text_renderer.render_text.return_value = test_image
@@ -141,7 +133,7 @@ class TestRenderingEngine:
         engine = RenderingEngine()
         motion = MotionConfig(type=MotionType.NONE)
 
-        with patch('src.core.engine.font_manager') as mock_fm:
+        with patch("src.core.engine.font_manager") as mock_fm:
             mock_fm.font_exists.return_value = False
 
             with pytest.raises(ValueError, match="Font not found"):
@@ -150,35 +142,35 @@ class TestRenderingEngine:
     def test_encode_webp(self):
         """Test WebP encoding."""
         engine = RenderingEngine()
-        image = Image.new('RGBA', (256, 256), (255, 0, 0, 255))
+        image = Image.new("RGBA", (256, 256), (255, 0, 0, 255))
 
         data = engine._encode_webp(image)
 
         assert isinstance(data, bytes)
         assert len(data) > 0
         # Check WebP magic bytes (RIFF....WEBP)
-        assert data[:4] == b'RIFF'
-        assert data[8:12] == b'WEBP'
+        assert data[:4] == b"RIFF"
+        assert data[8:12] == b"WEBP"
 
     def test_encode_apng_single_frame(self):
         """Test APNG encoding with single frame."""
         engine = RenderingEngine()
-        image = Image.new('RGBA', (256, 256), (255, 0, 0, 255))
+        image = Image.new("RGBA", (256, 256), (255, 0, 0, 255))
 
         data = engine._encode_apng([image])
 
         assert isinstance(data, bytes)
         assert len(data) > 0
         # Check PNG magic bytes
-        assert data[:8] == b'\x89PNG\r\n\x1a\n'
+        assert data[:8] == b"\x89PNG\r\n\x1a\n"
 
     def test_encode_apng_multiple_frames(self):
         """Test APNG encoding with multiple frames."""
         engine = RenderingEngine()
         frames = [
-            Image.new('RGBA', (256, 256), (255, 0, 0, 255)),
-            Image.new('RGBA', (256, 256), (0, 255, 0, 255)),
-            Image.new('RGBA', (256, 256), (0, 0, 255, 255)),
+            Image.new("RGBA", (256, 256), (255, 0, 0, 255)),
+            Image.new("RGBA", (256, 256), (0, 255, 0, 255)),
+            Image.new("RGBA", (256, 256), (0, 0, 255, 255)),
         ]
 
         data = engine._encode_apng(frames)
@@ -186,7 +178,7 @@ class TestRenderingEngine:
         assert isinstance(data, bytes)
         assert len(data) > 0
         # Check PNG magic bytes
-        assert data[:8] == b'\x89PNG\r\n\x1a\n'
+        assert data[:8] == b"\x89PNG\r\n\x1a\n"
 
     def test_encode_apng_empty_frames(self):
         """Test APNG encoding with empty frames list raises error."""
@@ -199,7 +191,7 @@ class TestRenderingEngine:
         engine = RenderingEngine()
         small_data = b"x" * 1000  # 1KB
 
-        with patch('src.core.engine.settings') as mock_settings:
+        with patch("src.core.engine.settings") as mock_settings:
             mock_settings.max_image_size_kb = 10
             assert engine.check_size_limit(small_data) is True
 
@@ -208,7 +200,7 @@ class TestRenderingEngine:
         engine = RenderingEngine()
         large_data = b"x" * (2 * 1024 * 1024)  # 2MB
 
-        with patch('src.core.engine.settings') as mock_settings:
+        with patch("src.core.engine.settings") as mock_settings:
             mock_settings.max_image_size_kb = 1024  # 1MB limit
             assert engine.check_size_limit(large_data) is False
 
@@ -217,7 +209,7 @@ class TestRenderingEngine:
         engine = RenderingEngine()
         exact_data = b"x" * (1024 * 1024)  # Exactly 1MB
 
-        with patch('src.core.engine.settings') as mock_settings:
+        with patch("src.core.engine.settings") as mock_settings:
             mock_settings.max_image_size_kb = 1024  # 1MB limit
             assert engine.check_size_limit(exact_data) is True
 
@@ -241,7 +233,7 @@ class TestRenderingEngine:
         engine = RenderingEngine()
         motion = MotionConfig(type=MotionType.NONE)
 
-        with patch('src.core.engine.font_manager') as mock_fm:
+        with patch("src.core.engine.font_manager") as mock_fm:
             mock_fm.font_exists.return_value = True
             engine.text_renderer = MagicMock()
             engine.text_renderer.render_text.return_value = test_image
@@ -271,11 +263,12 @@ class TestRenderingEngineIntegration:
         """Test full render pipeline with mocked font."""
         engine = RenderingEngine()
 
-        with patch('src.core.engine.font_manager') as mock_fm, \
-             patch.object(engine.text_renderer, 'render_text') as mock_render:
-
+        with (
+            patch("src.core.engine.font_manager") as mock_fm,
+            patch.object(engine.text_renderer, "render_text") as mock_render,
+        ):
             mock_fm.font_exists.return_value = True
-            mock_image = Image.new('RGBA', (256, 256), (255, 0, 0, 255))
+            mock_image = Image.new("RGBA", (256, 256), (255, 0, 0, 255))
             mock_render.return_value = mock_image
 
             style = TextStyle(font_id="test", text_color="#FF0000")

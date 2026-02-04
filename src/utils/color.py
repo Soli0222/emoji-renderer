@@ -16,16 +16,16 @@ def hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
     Raises:
         ValueError: If hex_color is invalid
     """
-    hex_color = hex_color.lstrip('#')
+    hex_color = hex_color.lstrip("#")
 
     # Handle 3-character shorthand
     if len(hex_color) == 3:
-        hex_color = ''.join(c * 2 for c in hex_color)
+        hex_color = "".join(c * 2 for c in hex_color)
 
     if len(hex_color) != 6:
         raise ValueError(f"Invalid hex color: {hex_color}")
 
-    if not re.match(r'^[A-Fa-f0-9]{6}$', hex_color):
+    if not re.match(r"^[A-Fa-f0-9]{6}$", hex_color):
         raise ValueError(f"Invalid hex color: {hex_color}")
 
     r = int(hex_color[0:2], 16)
@@ -164,5 +164,5 @@ def validate_hex_color(hex_color: str) -> bool:
     Returns:
         True if valid, False otherwise
     """
-    pattern = r'^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
+    pattern = r"^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
     return bool(re.match(pattern, hex_color))

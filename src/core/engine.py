@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class RenderResult:
     """Result of a render operation."""
+
     data: bytes
     format: str  # "webp" or "apng"
     size_bytes: int
@@ -38,11 +39,7 @@ class RenderingEngine:
         self.animation_generator = animation_generator
 
     def render(
-        self,
-        text: str,
-        style: TextStyle,
-        layout: LayoutConfig,
-        motion: MotionConfig
+        self, text: str, style: TextStyle, layout: LayoutConfig, motion: MotionConfig
     ) -> RenderResult:
         """
         Render an emoji image or animation.
@@ -78,9 +75,7 @@ class RenderingEngine:
             output_format = "apng"
         else:
             # Other animations transform the base image
-            frames = self.animation_generator.generate_frames(
-                base_image, motion, style.text_color
-            )
+            frames = self.animation_generator.generate_frames(base_image, motion, style.text_color)
             output_format = "apng"
 
         # Encode output
@@ -92,18 +87,11 @@ class RenderingEngine:
         render_time = (time.time() - start_time) * 1000
 
         return RenderResult(
-            data=data,
-            format=output_format,
-            size_bytes=len(data),
-            render_time_ms=render_time
+            data=data, format=output_format, size_bytes=len(data), render_time_ms=render_time
         )
 
     def _generate_gaming_frames(
-        self,
-        text: str,
-        style: TextStyle,
-        layout: LayoutConfig,
-        motion: MotionConfig
+        self, text: str, style: TextStyle, layout: LayoutConfig, motion: MotionConfig
     ) -> list[Image.Image]:
         """
         Generate gaming (rainbow) frames by re-rendering with rotated hue.
@@ -128,9 +116,7 @@ class RenderingEngine:
             new_color = rotate_hue(*base_rgb, hue_shift)
 
             # Re-render with new color
-            frame = self.text_renderer.render_text(
-                text, style, layout, custom_text_color=new_color
-            )
+            frame = self.text_renderer.render_text(text, style, layout, custom_text_color=new_color)
             frames.append(frame)
 
         return frames
@@ -146,7 +132,7 @@ class RenderingEngine:
             WebP bytes
         """
         buffer = io.BytesIO()
-        image.save(buffer, format='WEBP', quality=90, lossless=False)
+        image.save(buffer, format="WEBP", quality=90, lossless=False)
         return buffer.getvalue()
 
     def _encode_apng(self, frames: list[Image.Image]) -> bytes:
@@ -166,17 +152,17 @@ class RenderingEngine:
 
         if len(frames) == 1:
             # Single frame - just save as PNG
-            frames[0].save(buffer, format='PNG', optimize=True)
+            frames[0].save(buffer, format="PNG", optimize=True)
         else:
             # Multiple frames - save as APNG
             frames[0].save(
                 buffer,
-                format='PNG',
+                format="PNG",
                 save_all=True,
                 append_images=frames[1:],
                 duration=FRAME_DURATION_MS,
                 loop=0,  # Infinite loop
-                optimize=True
+                optimize=True,
             )
 
         return buffer.getvalue()

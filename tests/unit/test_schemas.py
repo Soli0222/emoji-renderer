@@ -190,6 +190,7 @@ class TestRenderRequest:
         """Test text length limit."""
         # Get the max length from settings
         from src.config import settings
+
         max_len = settings.max_text_length
 
         # Valid: at limit
@@ -215,13 +216,9 @@ class TestRenderRequest:
                 textColor="#FF0000",
                 outlineColor="#000000",
                 outlineWidth=5,
-                shadow=True
+                shadow=True,
             ),
-            motion=MotionSchema(
-                type="shake",
-                intensity="high",
-                speed=2.0
-            )
+            motion=MotionSchema(type="shake", intensity="high", speed=2.0),
         )
         assert request.layout.mode == "banner"
         assert request.style.outlineWidth == 5
@@ -245,9 +242,7 @@ class TestFontSchema:
     def test_valid_categories(self):
         """Test valid category values."""
         font = FontSchema(
-            id="test",
-            name="Test",
-            categories=["serif", "sans-serif", "handwritten", "display"]
+            id="test", name="Test", categories=["serif", "sans-serif", "handwritten", "display"]
         )
         assert len(font.categories) == 4
 

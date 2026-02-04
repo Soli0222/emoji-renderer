@@ -14,6 +14,7 @@ class TestFontManager:
         """Create a fresh FontManager instance for testing."""
         # Reset singleton for testing
         from src.core.fonts import FontManager
+
         FontManager._instance = None
         manager = FontManager()
         return manager
@@ -27,6 +28,7 @@ class TestFontManager:
     def test_singleton_pattern(self):
         """Test that FontManager follows singleton pattern."""
         from src.core.fonts import FontManager
+
         FontManager._instance = None
 
         manager1 = FontManager()
@@ -108,7 +110,7 @@ class TestFontManager:
         font_file.write_bytes(b"dummy font data")
 
         # Mock ImageFont.truetype to avoid actually loading the font
-        with patch.object(ImageFont, 'truetype', return_value=MagicMock()):
+        with patch.object(ImageFont, "truetype", return_value=MagicMock()):
             font_manager.initialize(str(tmp_path))
 
             # Check font was detected
@@ -128,7 +130,7 @@ class TestFontManager:
             font_file = tmp_path / f"Font{ext}{ext}"
             font_file.write_bytes(b"dummy font data")
 
-        with patch.object(ImageFont, 'truetype', return_value=MagicMock()):
+        with patch.object(ImageFont, "truetype", return_value=MagicMock()):
             font_manager.initialize(str(tmp_path))
 
             # Check all extensions were loaded
@@ -143,7 +145,7 @@ class TestFontManager:
 
         mock_font = MagicMock()
 
-        with patch.object(ImageFont, 'truetype', return_value=mock_font) as mock_truetype:
+        with patch.object(ImageFont, "truetype", return_value=mock_font) as mock_truetype:
             font_manager.initialize(str(tmp_path))
 
             # Get the same font twice
@@ -151,12 +153,12 @@ class TestFontManager:
             font_manager.get_font("cachetest", 32)
 
             # truetype should only be called once for the same size
-            calls = [c for c in mock_truetype.call_args_list if c[1].get('size') == 32]
+            calls = [c for c in mock_truetype.call_args_list if c[1].get("size") == 32]
             assert len(calls) == 1
 
             # But different sizes should trigger new loads
             font_manager.get_font("cachetest", 64)
-            calls = [c for c in mock_truetype.call_args_list if c[1].get('size') == 64]
+            calls = [c for c in mock_truetype.call_args_list if c[1].get("size") == 64]
             assert len(calls) == 1
 
 
@@ -168,10 +170,7 @@ class TestFontInfo:
         from src.core.fonts import FontInfo
 
         info = FontInfo(
-            id="test_font",
-            name="Test Font",
-            path="/path/to/font.ttf",
-            categories=["sans-serif"]
+            id="test_font", name="Test Font", path="/path/to/font.ttf", categories=["sans-serif"]
         )
 
         assert info.id == "test_font"
