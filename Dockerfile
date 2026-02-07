@@ -1,5 +1,5 @@
 # Base image - Python Alpine
-FROM python:3.13.11-alpine3.23
+FROM python:3.14.3-alpine3.23
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
