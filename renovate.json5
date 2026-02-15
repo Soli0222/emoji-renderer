@@ -37,7 +37,7 @@
     {
       matchDepNames: ['python'],
       groupName: 'python version',
-      automerge: false,
+      automerge: true,
     },
     {
       matchManagers: [
@@ -51,7 +51,7 @@
         'pip_requirements',
       ],
       commitMessageTopic: 'Python {{depName}}',
-      automerge: false,
+      automerge: true,
     },
     {
       matchManagers: [
@@ -62,7 +62,7 @@
         '!python',
       ],
       commitMessageTopic: 'Docker {{depName}}',
-      automerge: false,
+      automerge: true,
     },
   ],
 }
