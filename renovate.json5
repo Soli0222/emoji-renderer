@@ -20,7 +20,25 @@
       'security',
     ],
   },
+  customManagers: [
+    {
+      customType: 'regex',
+      managerFilePatterns: [
+        '/^.github/workflows/.*.ya?ml$/',
+      ],
+      matchStrings: [
+        'python-version:\\s*[\'"]?(?<currentValue>[^\'"\\s]+)[\'"]?',
+      ],
+      depNameTemplate: 'python',
+      datasourceTemplate: 'docker',
+    },
+  ],
   packageRules: [
+    {
+      matchDepNames: ['python'],
+      groupName: 'python version',
+      automerge: false,
+    },
     {
       matchManagers: [
         'github-actions',
@@ -39,6 +57,9 @@
       matchManagers: [
         'docker-compose',
         'dockerfile',
+      ],
+      matchDepNames: [
+        '!python',
       ],
       commitMessageTopic: 'Docker {{depName}}',
       automerge: false,
