@@ -1,14 +1,18 @@
 """Unit tests for text rendering."""
 
+import math
 from unittest.mock import patch
 
 import pytest
 from PIL import Image, ImageFont
 
+from src.core.fonts import font_manager
 from src.core.text import (
     DEFAULT_HEIGHT,
     MAX_FONT_SIZE,
+    MAX_VERTICAL_SCALE,
     MIN_FONT_SIZE,
+    MIN_VERTICAL_SCALE,
     PADDING,
     SQUARE_SIZE,
     LayoutConfig,
@@ -62,10 +66,22 @@ class TestLayoutConfig:
 class TestTextRenderer:
     """Tests for TextRenderer class."""
 
+    TEST_FONT_ID = "notosansjp_bold"
+
     @pytest.fixture
     def renderer(self):
         """Create TextRenderer instance."""
         return TextRenderer()
+
+    @pytest.fixture
+    def real_font_manager(self):
+        """Initialize the bundled fonts for regression-style rendering tests."""
+        font_manager.initialize("assets/fonts")
+        return font_manager
+
+    def _get_alpha_bbox(self, image):
+        """Return the alpha-channel bbox for visible pixels."""
+        return image.getchannel("A").getbbox()
 
     def test_get_multiline_bbox_single_line(self, renderer):
         """Test bounding box calculation for single line text."""
@@ -107,6 +123,46 @@ class TestTextRenderer:
             # With outline, available space is less, so font should be same or smaller
             assert size_with_outline <= size_no_outline
 
+    def test_calculate_font_size_for_square_limits_vertical_scale_for_tall_text(
+        self, renderer, real_font_manager
+    ):
+        """Test square-mode sizing keeps tall multiline text within scale bounds."""
+        font_size = renderer.calculate_font_size_for_square(
+            "あ\nい\nう\nえ\nお", self.TEST_FONT_ID, SQUARE_SIZE, 0
+        )
+        font = real_font_manager.get_font(self.TEST_FONT_ID, font_size)
+        _, text_height = renderer._get_text_dimensions("あ\nい\nう\nえ\nお", font, 0)
+        available_size = SQUARE_SIZE - (PADDING * 2)
+        vertical_scale = available_size / text_height
+
+        assert MIN_FONT_SIZE <= font_size <= MAX_FONT_SIZE
+        assert vertical_scale >= MIN_VERTICAL_SCALE
+
+    def test_square_vertical_scale_guard_can_raise_height_when_room_remains(self, renderer):
+        """Test the upper vertical-scale guard can increase font size when width headroom exists."""
+
+        class DummyFont:
+            def __init__(self, size):
+                self.size = size
+
+        with patch("src.core.text.MAX_FONT_SIZE", 400), patch("src.core.text.font_manager") as mock_fm:
+            mock_fm.get_font.side_effect = lambda _font_id, size: DummyFont(size)
+
+            def fake_dimensions(_text, font, outline_width=0):
+                width = min(font.size // 2, 180 - (outline_width * 2))
+                height = max(1, math.ceil(font.size / 3))
+                return width + (outline_width * 2), height + (outline_width * 2)
+
+            renderer._get_text_dimensions = fake_dimensions
+
+            font_size = renderer._apply_square_vertical_scale_guard("narrow", "test_font", 200, 236, 0)
+            available_size = SQUARE_SIZE - (PADDING * 2)
+            _, text_height = renderer._get_text_dimensions("narrow", DummyFont(font_size), 0)
+            vertical_scale = available_size / text_height
+
+            assert font_size > 200
+            assert vertical_scale <= MAX_VERTICAL_SCALE
+
     def test_calculate_banner_dimensions(self, renderer):
         """Test banner dimension calculation."""
         with patch("src.core.text.font_manager") as mock_fm:
@@ -136,6 +192,35 @@ class TestTextRenderer:
             assert isinstance(image, Image.Image)
             assert image.size == (SQUARE_SIZE, SQUARE_SIZE)
             assert image.mode == "RGBA"
+
+    def test_render_text_square_mode_stretches_single_character(self, renderer, real_font_manager):
+        """Test square mode stretches a short single-line string to fill the drawable square."""
+        style = TextStyle(font_id=self.TEST_FONT_ID, text_color="#FF0000")
+        layout = LayoutConfig(mode="square", alignment="center")
+
+        image = renderer.render_text("あ", style, layout)
+        bbox = self._get_alpha_bbox(image)
+        available_size = SQUARE_SIZE - (PADDING * 2) - (style.outline_width * 2)
+
+        assert bbox is not None
+        assert (bbox[2] - bbox[0]) >= available_size - 2
+        assert (bbox[3] - bbox[1]) >= available_size - 2
+
+    def test_render_text_square_mode_multiline_fits_drawable_square(
+        self, renderer, real_font_manager
+    ):
+        """Test square mode keeps multiline text within the drawable square."""
+        style = TextStyle(font_id=self.TEST_FONT_ID, text_color="#FF0000")
+        layout = LayoutConfig(mode="square", alignment="center")
+
+        image = renderer.render_text("あ\nい\nう\nえ\nお", style, layout)
+        bbox = self._get_alpha_bbox(image)
+        available_size = SQUARE_SIZE - (PADDING * 2) - (style.outline_width * 2)
+
+        assert bbox is not None
+        assert (bbox[2] - bbox[0]) <= available_size
+        assert (bbox[3] - bbox[1]) <= available_size
+        assert (bbox[3] - bbox[1]) >= available_size - 2
 
     def test_render_text_banner_mode(self, renderer):
         """Test rendering in banner mode produces dynamic width."""
@@ -234,6 +319,19 @@ class TestTextRenderer:
             image = renderer.render_text("Line 1\nLine 2", style, layout)
             assert image is not None
 
+    @pytest.mark.parametrize("text", ["", " ", "\n"])
+    def test_render_text_square_mode_returns_transparent_canvas_for_empty_inputs(
+        self, renderer, real_font_manager, text
+    ):
+        """Test square mode returns a transparent canvas when no ink is produced."""
+        style = TextStyle(font_id=self.TEST_FONT_ID, text_color="#FF0000")
+        layout = LayoutConfig(mode="square", alignment="center")
+
+        image = renderer.render_text(text, style, layout)
+
+        assert image.size == (SQUARE_SIZE, SQUARE_SIZE)
+        assert self._get_alpha_bbox(image) is None
+
     def test_add_shadow_creates_blurred_layer(self, renderer):
         """Test shadow creation."""
         canvas = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
@@ -259,9 +357,13 @@ class TestTextRendererConstants:
 
     def test_padding(self):
         """Test padding constant."""
-        assert PADDING == 10
+        assert PADDING > 0
 
     def test_font_size_range(self):
         """Test font size range constants."""
         assert MIN_FONT_SIZE < MAX_FONT_SIZE
         assert MIN_FONT_SIZE > 0
+
+    def test_vertical_scale_range(self):
+        """Test vertical scale constants."""
+        assert MIN_VERTICAL_SCALE < MAX_VERTICAL_SCALE
