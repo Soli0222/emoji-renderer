@@ -17,7 +17,8 @@ DEFAULT_HEIGHT = 256
 SQUARE_SIZE = 256
 MIN_FONT_SIZE = 10
 MAX_FONT_SIZE = 200
-PADDING = 10
+PADDING = 4
+LINE_SPACING = 0
 MAX_VERTICAL_SCALE = 2.0
 MIN_VERTICAL_SCALE = 0.5
 SHADOW_OFFSET = 4
@@ -133,7 +134,7 @@ class TextRenderer:
         temp_img = Image.new("RGBA", (1, 1))
         temp_draw = ImageDraw.Draw(temp_img)
 
-        bbox = temp_draw.multiline_textbbox((0, 0), text, font=font)
+        bbox = temp_draw.multiline_textbbox((0, 0), text, font=font, spacing=LINE_SPACING)
         return (int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3]))
 
     def _get_text_dimensions(
@@ -228,13 +229,19 @@ class TextRenderer:
                 text,
                 font=font,
                 fill=(*text_color, 255),
+                spacing=LINE_SPACING,
                 stroke_width=style.outline_width,
                 stroke_fill=(*outline_color, 255),
                 align=layout.alignment,
             )
         else:
             draw.multiline_text(
-                (x, y), text, font=font, fill=(*text_color, 255), align=layout.alignment
+                (x, y),
+                text,
+                font=font,
+                fill=(*text_color, 255),
+                spacing=LINE_SPACING,
+                align=layout.alignment,
             )
 
     def _render_tight_text_image(
@@ -375,6 +382,7 @@ class TextRenderer:
             text,
             font=font,
             fill=(0, 0, 0, 128),
+            spacing=LINE_SPACING,
             stroke_width=outline_width,
             stroke_fill=(0, 0, 0, 128),
         )
