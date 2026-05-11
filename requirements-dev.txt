@@ -9,4 +9,4 @@ httpx==0.28.1
 
 # Code quality
 ruff==0.15.12
-mypy==2.0.0
+mypy==2.1.0
