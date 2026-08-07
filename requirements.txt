@@ -3,6 +3,6 @@ uvicorn[standard]==0.52.1
 pillow==12.3.0
 numpy==2.5.1
 pydantic==2.13.4
-pydantic-settings==2.14.2
+pydantic-settings==2.15.0
 prometheus-client==0.26.0
 python-json-logger==4.1.0
