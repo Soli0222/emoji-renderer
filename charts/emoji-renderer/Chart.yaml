@@ -1,0 +1,8 @@
+apiVersion: v2
+name: emoji-renderer
+description: A Helm chart for the Emoji Renderer Service - Misskey Custom Emoji image generation microservice
+type: application
+sources:
+  - https://github.com/Soli0222/emoji-renderer
+version: 0.0.0
+appVersion: "0.0.0"

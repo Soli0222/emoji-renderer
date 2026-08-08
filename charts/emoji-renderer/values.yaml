@@ -1,0 +1,210 @@
+# Default values for emoji-renderer.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Application metadata
+nameOverride: ""
+fullnameOverride: ""
+
+# Image configuration
+image:
+  repository: ghcr.io/soli0222/emoji-renderer
+  tag: ""  # Defaults to appVersion if not set
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+# Service account configuration
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# Pod security context
+podSecurityContext: {}
+  # fsGroup: 2000
+
+# Container security context
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# Deployment configuration
+replicaCount: 1
+
+# Port configuration
+containerPort: 8109
+metricsPort: 9109
+
+# Service configuration
+service:
+  # Main application service
+  type: ClusterIP
+  port: 8109
+
+# Metrics service configuration
+metricsService:
+  # Enable separate metrics service
+  enabled: true
+  type: ClusterIP
+  port: 9109
+
+# Resource limits and requests
+resources: {}
+  # limits:
+  #   cpu: 500m
+  #   memory: 512Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 256Mi
+
+# Node selection
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity
+affinity: {}
+
+# Pod annotations
+podAnnotations: {}
+
+# Pod labels
+podLabels: {}
+
+# Ingress configuration
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: emoji-renderer.example.tld
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: emoji-renderer-tls
+  #    hosts:
+  #      - emoji-renderer.example.tld
+
+# Application specific configuration
+config:
+  # Log level (DEBUG, INFO, WARNING, ERROR)
+  logLevel: "INFO"
+  # Maximum text length for input
+  maxTextLength: "20"
+  # Maximum output image size in KB
+  maxImageSizeKb: "1024"
+  # Default font ID
+  defaultFontId: "notosansjp_regular"
+  # Font directory path (inside container)
+  fontDirectory: "./assets/fonts"
+
+# Additional environment variables (optional)
+extraEnv: []
+  # - name: CUSTOM_VAR
+  #   value: "custom-value"
+
+# Health checks
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+# Monitoring configuration
+monitoring:
+  # ServiceMonitor configuration (requires Prometheus Operator)
+  serviceMonitor:
+    # Enable ServiceMonitor creation
+    enabled: false
+    # Namespace to create ServiceMonitor in (defaults to release namespace)
+    namespace: ""
+    # Additional labels for ServiceMonitor
+    labels: {}
+    # Annotations for ServiceMonitor
+    annotations: {}
+    # Job label for ServiceMonitor
+    jobLabel: ""
+    # Additional selector labels
+    selector: {}
+    # Scrape interval
+    interval: "30s"
+    # Scrape timeout
+    scrapeTimeout: "10s"
+    # Metrics path
+    path: "/metrics"
+    # Relabelings
+    relabelings: []
+    # Metric relabelings
+    metricRelabelings: []
+
+  # PrometheusRule configuration (requires Prometheus Operator)
+  prometheusRule:
+    # Enable PrometheusRule creation
+    enabled: false
+    # Namespace to create PrometheusRule in (defaults to release namespace)
+    namespace: ""
+    # Additional labels for PrometheusRule
+    labels: {}
+    # Annotations for PrometheusRule
+    annotations: {}
+    # Alert rules
+    rules:
+      # High error rate alert
+      errorRate:
+        enabled: true
+        # Alert threshold (percentage)
+        threshold: 5
+        # Duration before alerting
+        for: "5m"
+        # Severity level
+        severity: "warning"
+      # Render duration alert
+      slowRender:
+        enabled: true
+        # Alert threshold (seconds)
+        threshold: 5
+        # Duration before alerting
+        for: "5m"
+        # Severity level
+        severity: "warning"
+      # Service down alert
+      serviceDown:
+        enabled: true
+        # Duration before alerting
+        for: "5m"
+        # Severity level
+        severity: "critical"
+    # Additional custom rules
+    additionalRules: []
+    # - alert: CustomAlert
+    #   expr: custom_metric > 100
+    #   for: 5m
+    #   labels:
+    #     severity: warning
+    #   annotations:
+    #     summary: "Custom alert triggered"
