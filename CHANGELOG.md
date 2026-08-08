@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.0](https://github.com/Soli0222/emoji-renderer/compare/v1.2.1...v1.3.0) (2026-08-08)
+
+
+### 新機能
+
+* publish helm chart as OCI artifact from this repo ([#169](https://github.com/Soli0222/emoji-renderer/issues/169)) ([da70519](https://github.com/Soli0222/emoji-renderer/commit/da705193e5660a9edeec466fc1cdae010560200b))
+
+
+### バグ修正・依存関係の更新
+
+* **deps:** update python docker tag to v3.14.7 ([#165](https://github.com/Soli0222/emoji-renderer/issues/165)) ([cb2ab9b](https://github.com/Soli0222/emoji-renderer/commit/cb2ab9b65aef83624e6f20575640da1dc7eab28d))
+* **deps:** update python pydantic-settings to v2.15.0 ([#166](https://github.com/Soli0222/emoji-renderer/issues/166)) ([be8fbdd](https://github.com/Soli0222/emoji-renderer/commit/be8fbdddeafde3d589c1a845a277ba578a0e375e))
+* **deps:** update python ruff to v0.16.2 ([#168](https://github.com/Soli0222/emoji-renderer/issues/168)) ([79dbc7c](https://github.com/Soli0222/emoji-renderer/commit/79dbc7c7d00c99f4d5b5c992e587f3266b8b4220))
+
 ## [1.2.1](https://github.com/Soli0222/emoji-renderer/compare/v1.2.0...v1.2.1) (2026-08-01)
 
 
