@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.2](https://github.com/Soli0222/emoji-renderer/compare/v1.4.1...v1.4.2) (2026-08-28)
+
+
+### バグ修正・依存関係の更新
+
+* **deps:** update python pydantic to v2.13.5 ([#191](https://github.com/Soli0222/emoji-renderer/issues/191)) ([0b53653](https://github.com/Soli0222/emoji-renderer/commit/0b53653905f1c569c2547a023ab8a77d86b394fe))
+* **deps:** update python ruff to v0.16.5 ([#189](https://github.com/Soli0222/emoji-renderer/issues/189)) ([5480128](https://github.com/Soli0222/emoji-renderer/commit/5480128eecf83169576ed8873063200a844400d0))
+
 ## [1.4.1](https://github.com/Soli0222/emoji-renderer/compare/v1.4.0...v1.4.1) (2026-08-20)
 
 
