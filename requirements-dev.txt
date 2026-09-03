@@ -8,5 +8,5 @@ pytest-asyncio==1.4.0
 httpx==0.28.1
 
 # Code quality
-ruff==0.16.5
+ruff==0.16.6
 mypy==2.3.1
