@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.3](https://github.com/Soli0222/emoji-renderer/compare/v1.4.2...v1.4.3) (2026-09-03)
+
+
+### バグ修正・依存関係の更新
+
+* **deps:** update python ruff to v0.16.6 ([#193](https://github.com/Soli0222/emoji-renderer/issues/193)) ([7a61410](https://github.com/Soli0222/emoji-renderer/commit/7a61410920d34e401ad87207449fa55440e972d6))
+
 ## [1.4.2](https://github.com/Soli0222/emoji-renderer/compare/v1.4.1...v1.4.2) (2026-08-28)
 
 
