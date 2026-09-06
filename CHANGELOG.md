@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.4](https://github.com/Soli0222/emoji-renderer/compare/v1.4.3...v1.4.4) (2026-09-06)
+
+
+### バグ修正・依存関係の更新
+
+* **deps:** update python numpy to v2.5.3 ([#195](https://github.com/Soli0222/emoji-renderer/issues/195)) ([e5868a7](https://github.com/Soli0222/emoji-renderer/commit/e5868a7acf8b79156586f63436a643780c21e6e9))
+
 ## [1.4.3](https://github.com/Soli0222/emoji-renderer/compare/v1.4.2...v1.4.3) (2026-09-03)
 
 
