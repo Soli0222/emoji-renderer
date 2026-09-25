@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.6](https://github.com/Soli0222/emoji-renderer/compare/v1.4.5...v1.4.6) (2026-09-25)
+
+
+### バグ修正・依存関係の更新
+
+* **deps:** update python ruff to v0.16.9 ([#209](https://github.com/Soli0222/emoji-renderer/issues/209)) ([62014bb](https://github.com/Soli0222/emoji-renderer/commit/62014bb618cb4aadf6be6ddf8fb773969322bd53))
+* **deps:** update python uvicorn to v0.54.0 ([#211](https://github.com/Soli0222/emoji-renderer/issues/211)) ([af3b5fc](https://github.com/Soli0222/emoji-renderer/commit/af3b5fc7aaf6d3ed1b948fff73c428c81dbca7c5))
+
 ## [1.4.5](https://github.com/Soli0222/emoji-renderer/compare/v1.4.4...v1.4.5) (2026-09-16)
 
 
