@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.4.9](https://github.com/Soli0222/emoji-renderer/compare/v1.4.8...v1.4.9) (2026-10-16)
+
+
+### バグ修正・依存関係の更新
+
+* **ci:** restore Renovate status checks and surface errors ([#239](https://github.com/Soli0222/emoji-renderer/issues/239)) ([60fad7d](https://github.com/Soli0222/emoji-renderer/commit/60fad7d976672c32bb16f8df3ce3e061503c98f3))
+* **deps:** update github action python to v3.15.0 ([#229](https://github.com/Soli0222/emoji-renderer/issues/229)) ([af44b24](https://github.com/Soli0222/emoji-renderer/commit/af44b24026cd9ab429fc9ee658ea9d85fee39a05))
+* **deps:** update python docker tag to v3.15.0 ([#234](https://github.com/Soli0222/emoji-renderer/issues/234)) ([0217e57](https://github.com/Soli0222/emoji-renderer/commit/0217e570324f332610716275c74ef7187de0eee7))
+* **deps:** update python fastapi to v0.143.1 ([#235](https://github.com/Soli0222/emoji-renderer/issues/235)) ([5890325](https://github.com/Soli0222/emoji-renderer/commit/5890325163c115dde16a9e1f501c7fd22e8ab08d))
+* **deps:** update python fastapi to v0.143.2 ([#237](https://github.com/Soli0222/emoji-renderer/issues/237)) ([e50207a](https://github.com/Soli0222/emoji-renderer/commit/e50207ace0cf42f076934d19b19212fd001a2010))
+* **deps:** update python numpy to v2.5.4 ([#228](https://github.com/Soli0222/emoji-renderer/issues/228)) ([625ba2a](https://github.com/Soli0222/emoji-renderer/commit/625ba2a44d08c77b730b93f278ca593214c55a91))
+* **deps:** update python pydantic to v2.14.1 ([#231](https://github.com/Soli0222/emoji-renderer/issues/231)) ([96e524b](https://github.com/Soli0222/emoji-renderer/commit/96e524bff69aa14551f44af4be802adeba913379))
+* **deps:** update python pydantic-settings to v2.16.0 ([#236](https://github.com/Soli0222/emoji-renderer/issues/236)) ([014503c](https://github.com/Soli0222/emoji-renderer/commit/014503c39871ed43e551c052cb92d9850f5d44cb))
+* **deps:** update python ruff to v0.17.1 ([#238](https://github.com/Soli0222/emoji-renderer/issues/238)) ([e196e50](https://github.com/Soli0222/emoji-renderer/commit/e196e50d0ae78daa55e017ad0b945ffdefa023df))
+
 ## [1.4.8](https://github.com/Soli0222/emoji-renderer/compare/v1.4.7...v1.4.8) (2026-10-10)
 
 
