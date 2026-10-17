@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.10](https://github.com/Soli0222/emoji-renderer/compare/v1.4.9...v1.4.10) (2026-10-17)
+
+
+### バグ修正・依存関係の更新
+
+* **deps:** update python fastapi to v0.143.3 ([#242](https://github.com/Soli0222/emoji-renderer/issues/242)) ([dc0c0f3](https://github.com/Soli0222/emoji-renderer/commit/dc0c0f33001c435e0bc7287d2eb7b88e2a66f6fa))
+* **deps:** update python pillow to v13 ([#244](https://github.com/Soli0222/emoji-renderer/issues/244)) ([ea4172e](https://github.com/Soli0222/emoji-renderer/commit/ea4172e671799a5574a7f93d27db4337b0bb5275))
+
 ## [1.4.9](https://github.com/Soli0222/emoji-renderer/compare/v1.4.8...v1.4.9) (2026-10-16)
 
 
