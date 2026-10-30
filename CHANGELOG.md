@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.4.12](https://github.com/Soli0222/emoji-renderer/compare/v1.4.11...v1.4.12) (2026-10-30)
+
+
+### バグ修正・依存関係の更新
+
+* **deps:** update python docker tag to v3.15.2 ([#260](https://github.com/Soli0222/emoji-renderer/issues/260)) ([80a626e](https://github.com/Soli0222/emoji-renderer/commit/80a626ed383940e9cb5beaf88eb951f2e2ee1774))
+* **deps:** update python mypy to v2.4.1 ([#264](https://github.com/Soli0222/emoji-renderer/issues/264)) ([f003892](https://github.com/Soli0222/emoji-renderer/commit/f003892aea3ad6cc8ccb63d8674faceb246a4bdb))
+* **deps:** update python pydantic to v2.14.2 ([#265](https://github.com/Soli0222/emoji-renderer/issues/265)) ([5f74a58](https://github.com/Soli0222/emoji-renderer/commit/5f74a58e755e42ad81825b3a238f005ffca889cf))
+* **deps:** update python pydantic-settings to v2.16.2 ([#263](https://github.com/Soli0222/emoji-renderer/issues/263)) ([57f24de](https://github.com/Soli0222/emoji-renderer/commit/57f24dea363d99a5b720f27857f2137bf2f201a2))
+* **deps:** update python pytest to v9.2.0 ([#262](https://github.com/Soli0222/emoji-renderer/issues/262)) ([caa97a6](https://github.com/Soli0222/emoji-renderer/commit/caa97a6f67a353a6252a3334242cdd9207d7d9cc))
+* **deps:** update python pytest-asyncio to v1.4.1 ([#257](https://github.com/Soli0222/emoji-renderer/issues/257)) ([dd1eada](https://github.com/Soli0222/emoji-renderer/commit/dd1eadad5654d7016f5173de1fa9a39315ebeca0))
+* **deps:** update python ruff to v0.17.3 ([#261](https://github.com/Soli0222/emoji-renderer/issues/261)) ([4227048](https://github.com/Soli0222/emoji-renderer/commit/42270481a62a9159a07a10356f6fc9df9d752289))
+
 ## [1.4.11](https://github.com/Soli0222/emoji-renderer/compare/v1.4.10...v1.4.11) (2026-10-24)
 
 
