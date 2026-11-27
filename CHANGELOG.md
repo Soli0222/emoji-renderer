@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.16](https://github.com/Soli0222/emoji-renderer/compare/v1.4.15...v1.4.16) (2026-11-27)
+
+
+### バグ修正・依存関係の更新
+
+* **deps:** update python httpx to v0.29.0 ([#298](https://github.com/Soli0222/emoji-renderer/issues/298)) ([fd1375d](https://github.com/Soli0222/emoji-renderer/commit/fd1375dfebf4b439aa358e58267ea7388897a97b))
+
 ## [1.4.15](https://github.com/Soli0222/emoji-renderer/compare/v1.4.14...v1.4.15) (2026-11-20)
 
 
